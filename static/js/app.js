@@ -3,10 +3,10 @@ var svgWidth = 900;
 
 
 var margin = { 
-    top: 10, 
-    right: 50, 
-    bottom: 50, 
-    left: 30 
+    top: 20, 
+    right: 30, 
+    bottom: 80, 
+    left: 50 
 };
 
 // Set width and height of chart
@@ -85,7 +85,22 @@ d3.csv("static/data/data.csv").then(healthData => {
             .attr("fill", "white")
             .text(d => `${d.abbr}`)  
 
+    // Create Axis Labels
+    var axisLabels = chartGroup.append("g")
+            .classed("axis-labels", true)
 
+    //x-axis label 
+    axisLabels.append("text")
+            .classed("x-axis label", true)
+            .attr("transform", `translate(${width /2 }, ${height + 35})`)
+            .text("In Poverty (%)")
+
+    // y-axis label
+    axisLabels.append("text")
+            .classed("y-axis label", true)
+            .attr("transform", `translate(-30 , ${height/2}) rotate(-90)`)
+            .attr("text-anchor", "middle")
+            .text("Lacks Healthcare (%)")
                                 
 });
 
