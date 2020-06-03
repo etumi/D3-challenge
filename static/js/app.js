@@ -246,71 +246,14 @@ d3.csv("static/data/data.csv").then(healthData => {
             .attr("fill", "white")
             .text(d => `${d.abbr}`) 
 
-//-----------------------------------------DEBUGGER---------------------------------//
-// var xScaleTest1 = d3.scaleLinear()
-//             .domain(d3.extent(healthData, d => d["poverty"]))
-//             .range([0, width]);
-
-// console.log(`poverty: ${xScaleTest1(19.3)}`);
-
-// var xScaleTest2 = d3.scaleLinear()
-//             .domain(d3.extent(healthData, d => d["age"]))
-//             .range([0, width]);
-
-// console.log(`age is ${xScaleTest2(38.6)}`);
-
-// var xScaleTest3 = d3.scaleLinear()
-//             .domain(d3.extent(healthData, d => d["income"]))
-//             .range([0, width]);
-// console.log(`income is ${xScaleTest3(42830)}`);
-
-// var yScaleTest2 = d3.scaleLinear()
-//             .domain(d3.extent(healthData, d => d["smokes"]))
-//             .range([height, 0]);
-
-// console.log(`smokes: ${yScaleTest2(21.1)}`);
-//----------------------------------------------------------------------------------//
-
     //--------------------------------Create ToolTips---------------------------------------//
-    // var toolTip = chartGroup.append("div")
-    //     .attr("class", "tooltip");
-
-    // var toolTip = d3.tip()
-    //     .attr("class", "tooltip")
-    //     .offset([70, -80])
-    //     .html(function(d) {
-    //         return (`${d.state}<br>${xAxisName}: ${d[xAxisName]}%<br>${yAxisName}: ${d[yAxisName]}%`);
-    //     });
-    
-    //   circleGroup.call(toolTip);
-
-    //   circleGroup.on("mouseover", function(data) {
-    //     toolTip.show(data);
-    //   })
-    //     // onmouseout event
-    //     .on("mouseout", function(data, index) {
-    //       toolTip.hide(data);
-    //     });
-
     circleGroup = updateToolTip(circleGroup, xAxisName, yAxisName);
-    // circlesGroup.on("mouseover", function(d, i) {
-    //     toolTip.style("display", "block");
-    //     toolTip.html(`Pizzas eaten: <strong>${pizzasEatenByMonth[i]}</strong>`)
-    //       .style("left", d3.event.pageX + "px")
-    //       .style("top", d3.event.pageY + "px");
-    //   })
-    //     // Step 3: Add an onmouseout event to make the tooltip invisible
-    //     .on("mouseout", function() {
-    //       toolTip.style("display", "none");
-    //     });
 
     //--------------------------------Event listeners-----------------------------------------------//
     //Event listener for x axis changes
     axisLabels.selectAll(".x-axis-label").on("click", function(){
-        // Set x and y values based on selection
+        // Set x value based on selection
         var newxAxisName = d3.select(this).text();
-        //console.log("------------");
-        //d3.select(this).classed("test", true);
 
         if (newxAxisName === "In Poverty (%)") {
             povertyLabel.classed("active", true)
@@ -346,32 +289,20 @@ d3.csv("static/data/data.csv").then(healthData => {
                 xAxisName = "poverty";
         }
 
-        // console.log(`x axis ${xAxisName}`);
-        // //console.log(xAxisName);
-        // console.log(`y axis ${yAxisName}`);
-
         xLinearScale = xScale(healthData, xAxisName);
-        //yLinearScale = yScale(healthData, yAxisName);
 
-        // console.log(`width is ${width}`);
-        // console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
-        // console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
-
-        //xAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[0];
         renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
-        //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
 
         circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
-        //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
+
         updateToolTip(circleGroup, xAxisName, yAxisName);
 
    })
 
     //Event listener y axis changes   
    axisLabels.selectAll(".y-axis-label").on("click", function(){
-        // Set x and y values based on selection
+        // Set y value based on selection
         var newyAxisName = d3.select(this).text();
-        //console.log("------------");
 
         if (newyAxisName === "Lacks Healthcare (%)") {
             healthLabel.classed("active", true)
@@ -407,24 +338,12 @@ d3.csv("static/data/data.csv").then(healthData => {
                 yAxisName = "healthcare";
     }
 
-        // console.log(`xaxis ${xAxisName}`);
-        // //console.log(xAxisName);
-        // console.log(`y axis ${yAxisName}`);
-
-    // xLinearScale = xScale(healthData, xAxisName);
         yLinearScale = yScale(healthData, yAxisName);
 
-        // console.log(`height is ${height}`);
-        // console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
-        // console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
-
-        // xAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[0];
-        //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
         renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
 
-        //setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
         circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
-        //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
+       
         updateToolTip(circleGroup, xAxisName, yAxisName);
 
         })
