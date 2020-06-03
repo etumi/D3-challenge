@@ -188,21 +188,21 @@ d3.csv("static/data/data.csv").then(healthData => {
         .classed("axis-labels", true)
 
     //x-axis label 
-    axisLabels.append("text")
+    var povertyLabel = axisLabels.append("text")
         .classed("x-axis-label", true)
         .classed("active", true)
         .attr("transform", `translate(${width /2 }, ${height + 35})`)
         .attr("text-anchor", "middle")
         .text("In Poverty (%)")
 
-    axisLabels.append("text")
+    var ageLabel = axisLabels.append("text")
             .classed("x-axis-label", true)
             .classed("inactive", true)
             .attr("transform", `translate(${width /2 }, ${height + 55})`)
             .attr("text-anchor", "middle")
             .text("Age (Median)")
 
-    axisLabels.append("text")
+    var incomeLabel = axisLabels.append("text")
             .classed("x-axis-label", true)
             .classed("inactive", true)
             .attr("transform", `translate(${width /2 }, ${height + 75})`)
@@ -210,21 +210,21 @@ d3.csv("static/data/data.csv").then(healthData => {
             .text("Household Income (Median)")
 
     // y-axis label
-    axisLabels.append("text")
+    var obeseLabel = axisLabels.append("text")
             .classed("y-axis-label", true)
             .classed("inactive", true)
             .attr("transform", `translate(-70 , ${height/2}) rotate(-90)`)
             .attr("text-anchor", "middle")
             .text("Obese (%)")
 
-    axisLabels.append("text")
+    var smokesLabel = axisLabels.append("text")
             .classed("y-axis-label", true)
             .classed("inactive", true)
             .attr("transform", `translate(-50 , ${height/2}) rotate(-90)`)
             .attr("text-anchor", "middle")
             .text("Smokes (%)")
 
-    axisLabels.append("text")
+    var healthLabel = axisLabels.append("text")
             .classed("y-axis-label", true)
             .classed("active", true)
             .attr("transform", `translate(-30 , ${height/2}) rotate(-90)`)
@@ -283,36 +283,60 @@ d3.csv("static/data/data.csv").then(healthData => {
             .text(d => `${d.abbr}`) 
 
 //-----------------------------------------DEBUGGER---------------------------------//
-var xScaleTest1 = d3.scaleLinear()
-            .domain(d3.extent(healthData, d => d["poverty"]))
-            .range([0, width]);
+// var xScaleTest1 = d3.scaleLinear()
+//             .domain(d3.extent(healthData, d => d["poverty"]))
+//             .range([0, width]);
 
-console.log(`poverty: ${xScaleTest1(19.3)}`);
+// console.log(`poverty: ${xScaleTest1(19.3)}`);
 
-var xScaleTest2 = d3.scaleLinear()
-            .domain(d3.extent(healthData, d => d["age"]))
-            .range([0, width]);
+// var xScaleTest2 = d3.scaleLinear()
+//             .domain(d3.extent(healthData, d => d["age"]))
+//             .range([0, width]);
 
-console.log(`age is ${xScaleTest2(38.6)}`);
+// console.log(`age is ${xScaleTest2(38.6)}`);
 
-var xScaleTest3 = d3.scaleLinear()
-            .domain(d3.extent(healthData, d => d["income"]))
-            .range([0, width]);
-console.log(`income is ${xScaleTest3(42830)}`);
+// var xScaleTest3 = d3.scaleLinear()
+//             .domain(d3.extent(healthData, d => d["income"]))
+//             .range([0, width]);
+// console.log(`income is ${xScaleTest3(42830)}`);
 
-var yScaleTest2 = d3.scaleLinear()
-            .domain(d3.extent(healthData, d => d["smokes"]))
-            .range([height, 0]);
+// var yScaleTest2 = d3.scaleLinear()
+//             .domain(d3.extent(healthData, d => d["smokes"]))
+//             .range([height, 0]);
 
-console.log(`smokes: ${yScaleTest2(21.1)}`);
+// console.log(`smokes: ${yScaleTest2(21.1)}`);
 //----------------------------------------------------------------------------------//
 
     // Event listener for x axis changes
     axisLabels.selectAll(".x-axis-label").on("click", function(){
         // Set x and y values based on selection
         var newxAxisName = d3.select(this).text();
-        console.log("------------");
+        //console.log("------------");
+        //d3.select(this).classed("test", true);
 
+        if (newxAxisName === "In Poverty (%)") {
+            povertyLabel.classed("active", true)
+                        .classed("inactive", false);
+            ageLabel.classed("active", false)
+                    .classed("inactive", true);
+            incomeLabel.classed("active", false)
+                        .classed("inactive", true);
+        }else if (newxAxisName === "Age (Median)"){
+            povertyLabel.classed("active", false)
+                        .classed("inactive", true);
+            ageLabel.classed("active", true)
+                    .classed("inactive", false);
+            incomeLabel.classed("active", false)
+                        .classed("inactive", true);
+        }else {
+            povertyLabel.classed("active", false)
+                        .classed("inactive", true);
+            ageLabel.classed("active", false)
+                    .classed("inactive", true);
+            incomeLabel.classed("active", true)
+                        .classed("inactive", false);
+        }
+        
         switch(newxAxisName) {
             case "Age (Median)":
                 xAxisName = "age";
@@ -324,16 +348,16 @@ console.log(`smokes: ${yScaleTest2(21.1)}`);
                 xAxisName = "poverty";
         }
 
-        console.log(`x axis ${xAxisName}`);
-        //console.log(xAxisName);
-        console.log(`y axis ${yAxisName}`);
+        // console.log(`x axis ${xAxisName}`);
+        // //console.log(xAxisName);
+        // console.log(`y axis ${yAxisName}`);
 
         xLinearScale = xScale(healthData, xAxisName);
         //yLinearScale = yScale(healthData, yAxisName);
 
-        console.log(`width is ${width}`);
-        console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
-        console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
+        // console.log(`width is ${width}`);
+        // console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
+        // console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
 
         //xAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[0];
         renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
@@ -346,41 +370,64 @@ console.log(`smokes: ${yScaleTest2(21.1)}`);
 
     // Event listener y axis changes    
    axisLabels.selectAll(".y-axis-label").on("click", function(){
-    // Set x and y values based on selection
-    var newyAxisName = d3.select(this).text();
-    console.log("------------");
+        // Set x and y values based on selection
+        var newyAxisName = d3.select(this).text();
+        //console.log("------------");
 
-    switch(newyAxisName) {
-        case "Obese (%)":
-            yAxisName = "obesity";
-            break;
-        case "Smokes (%)":
-            yAxisName = "smokes";
-            break;
-        default: 
-            yAxisName = "healthcare";
+        if (newyAxisName === "Lacks Healthcare (%)") {
+            healthLabel.classed("active", true)
+                        .classed("inactive", false);
+            obeseLabel.classed("active", false)
+                    .classed("inactive", true);
+            smokesLabel.classed("active", false)
+                        .classed("inactive", true);
+        }else if (newyAxisName === "Obese (%)"){
+            healthLabel.classed("active", false)
+                        .classed("inactive", true);
+            obeseLabel.classed("active", true)
+                    .classed("inactive", false);
+            smokesLabel.classed("active", false)
+                        .classed("inactive", true);
+        }else {
+            healthLabel.classed("active", false)
+                        .classed("inactive", true);
+            obeseLabel.classed("active", false)
+                    .classed("inactive", true);
+            smokesLabel.classed("active", true)
+                        .classed("inactive", false);
+        }
+
+        switch(newyAxisName) {
+            case "Obese (%)":
+                yAxisName = "obesity";
+                break;
+            case "Smokes (%)":
+                yAxisName = "smokes";
+                break;
+            default: 
+                yAxisName = "healthcare";
     }
 
-    console.log(`xaxis ${xAxisName}`);
-    //console.log(xAxisName);
-    console.log(`y axis ${yAxisName}`);
+        // console.log(`xaxis ${xAxisName}`);
+        // //console.log(xAxisName);
+        // console.log(`y axis ${yAxisName}`);
 
-   // xLinearScale = xScale(healthData, xAxisName);
-    yLinearScale = yScale(healthData, yAxisName);
+    // xLinearScale = xScale(healthData, xAxisName);
+        yLinearScale = yScale(healthData, yAxisName);
 
-    console.log(`height is ${height}`);
-    console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
-    console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
+        // console.log(`height is ${height}`);
+        // console.log(`x value: ${xLinearScale(healthData[0][xAxisName])}`);
+        // console.log(`y value: ${yLinearScale(healthData[0][yAxisName])}`);
 
-    // xAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[0];
-    //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
-    renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
+        // xAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[0];
+        //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
+        renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
 
-    setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
-    // circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
-    //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
+        setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
+        // circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
+        //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
 
-    })
+        })
 
                                 
 }).catch(function(error) {

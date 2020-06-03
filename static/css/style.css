@@ -1,0 +1,11 @@
+.active{
+    fill: #000;
+    /* fill: gainsboro; */
+    transition: fill 0.3s ease-out;
+}
+
+.inactive{
+    font-weight: lighter;
+    fill: gainsboro;
+    transition: fill 0.3s ease-out;
+}
