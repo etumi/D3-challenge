@@ -9,3 +9,17 @@
     fill: gainsboro;
     transition: fill 0.3s ease-out;
 }
+
+.tooltip {
+    position: absolute;
+    width: 135px;
+    height: 60px;
+    padding: 2px;
+    padding-top: 8px;
+    font: 12px sans-serif;
+    color: white;
+    text-align: center;
+    background: #2c2b2e5e;
+    border: 0;
+    border-radius: 10px;
+  }

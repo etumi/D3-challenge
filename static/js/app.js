@@ -89,12 +89,6 @@ function matchNametoVariable(xAxisName, yAxisName){
 
 function setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xScale, yScale) {
 
-    //var names = matchNametoVariable(xAxisName, yAxisName);
-
-    //console.log(names);
-    //var newxAxisName = names[0];
-    //var newyAxisName = names[1]; 
-
     // render data points
     circleGroup.transition()
             .duration(1000)
@@ -109,62 +103,31 @@ function setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xScale, 
             .attr("y", d => yScale(d[yAxisName])+2.5)
             .text(d => `${d.abbr}`)  
 
-    //return [circleGroup, circleLabels] ;
+    return [circleGroup, circleLabels] ;
 
 }
 
-function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+function updateToolTip(circleGroup, xAxisName, yAxisName){
+    var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([70, -80])
+    .html(function(d) {
+        return (`${d.state}<br>${xAxisName}: ${d[xAxisName]}<br>${yAxisName}: ${d[yAxisName]}`);
+    });
 
-    circlesGroup.transition()
-      .duration(1000)
-      .attr("cx", d => newXScale(d[chosenXAxis]));
-  
-    return circlesGroup;
-  }
+  circleGroup.call(toolTip);
 
-// function setDataPoints(healthData, xAxisName, yAxisName, xScale, yScale) {
+  circleGroup.on("mouseover", function(data) {
+    toolTip.show(data);
+  })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data);
+    });
 
-//     var names = matchNametoVariable(xAxisName, yAxisName);
+    return circleGroup;
+}
 
-//     var xAxisName = names[0];
-//     var yAxisName = names[1]; 
-
-//     d3.select(".data-points").remove()
-//     d3.select(".data-point-labels").remove()
-//     //console.log(xAxisName);
-//     //console.log(yAxisName);
-//     //console.log(xScale(0.5))
-//     //console.log(yScale(0.5))
-
-//     var circleGroup = chartGroup.append("g").classed("data-points", true)
-//             .selectAll("circle")
-//             .data(healthData)
-//             .enter()
-//             .append("circle")
-//             .classed("data-point", true)
-//             .transition()
-//             .duration(200)
-//             .attr("cy", d => yScale(d[yAxisName]))
-//             .attr("cx", d => xScale(d[xAxisName]))
-//             .attr("r", 10)
-//             .attr("fill", "skyblue")
-//             .attr("opacity", .75);
-
-
-//     // Put State abbrev in data points
-//     var circleLabels = chartGroup.append("g").classed("data-point-labels", true)
-//             .selectAll("text")
-//             .data(healthData)
-//             .enter()
-//             .append("text")
-//             .attr("x", d => xScale(d[xAxisName]))
-//             .attr("y", d => yScale(d[yAxisName])+2.5)
-//             .attr("text-anchor", "middle")
-//             .attr("font-size", 10)
-//             .attr("fill", "white")
-//             .text(d => `${d.abbr}`)  
-
-// }
 
 //------------------------------------------------------------------------------//
 
@@ -183,7 +146,7 @@ d3.csv("static/data/data.csv").then(healthData => {
 
     console.log(healthData);
 
-    // Create Axis Labels
+    //--------------------------------Create Axis Labels---------------------------------------//
     var axisLabels = chartGroup.append("g")
         .classed("axis-labels", true)
 
@@ -231,7 +194,7 @@ d3.csv("static/data/data.csv").then(healthData => {
             .attr("text-anchor", "middle")
             .text("Lacks Healthcare (%)")
 
-    //generate axes
+    //--------------------------------Generate Axes---------------------------------------//
     var xAxisName = d3.select(".x-axis-label.active").text();
     var yAxisName = d3.select(".y-axis-label.active").text();
 
@@ -256,6 +219,7 @@ d3.csv("static/data/data.csv").then(healthData => {
         .classed('y-axis', true)
         .call(leftAxis);
 
+    //--------------------------------Creat Data Point Circles---------------------------------------//
     //Set data points
     var circleGroup = chartGroup.append("g").classed("data-points", true)
             .selectAll("circle")
@@ -307,7 +271,41 @@ d3.csv("static/data/data.csv").then(healthData => {
 // console.log(`smokes: ${yScaleTest2(21.1)}`);
 //----------------------------------------------------------------------------------//
 
-    // Event listener for x axis changes
+    //--------------------------------Create ToolTips---------------------------------------//
+    // var toolTip = chartGroup.append("div")
+    //     .attr("class", "tooltip");
+
+    // var toolTip = d3.tip()
+    //     .attr("class", "tooltip")
+    //     .offset([70, -80])
+    //     .html(function(d) {
+    //         return (`${d.state}<br>${xAxisName}: ${d[xAxisName]}%<br>${yAxisName}: ${d[yAxisName]}%`);
+    //     });
+    
+    //   circleGroup.call(toolTip);
+
+    //   circleGroup.on("mouseover", function(data) {
+    //     toolTip.show(data);
+    //   })
+    //     // onmouseout event
+    //     .on("mouseout", function(data, index) {
+    //       toolTip.hide(data);
+    //     });
+
+    circleGroup = updateToolTip(circleGroup, xAxisName, yAxisName);
+    // circlesGroup.on("mouseover", function(d, i) {
+    //     toolTip.style("display", "block");
+    //     toolTip.html(`Pizzas eaten: <strong>${pizzasEatenByMonth[i]}</strong>`)
+    //       .style("left", d3.event.pageX + "px")
+    //       .style("top", d3.event.pageY + "px");
+    //   })
+    //     // Step 3: Add an onmouseout event to make the tooltip invisible
+    //     .on("mouseout", function() {
+    //       toolTip.style("display", "none");
+    //     });
+
+    //--------------------------------Event listeners-----------------------------------------------//
+    //Event listener for x axis changes
     axisLabels.selectAll(".x-axis-label").on("click", function(){
         // Set x and y values based on selection
         var newxAxisName = d3.select(this).text();
@@ -363,12 +361,13 @@ d3.csv("static/data/data.csv").then(healthData => {
         renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
         //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
 
-        setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
+        circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
         //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
+        updateToolTip(circleGroup, xAxisName, yAxisName);
 
    })
 
-    // Event listener y axis changes    
+    //Event listener y axis changes   
    axisLabels.selectAll(".y-axis-label").on("click", function(){
         // Set x and y values based on selection
         var newyAxisName = d3.select(this).text();
@@ -423,13 +422,13 @@ d3.csv("static/data/data.csv").then(healthData => {
         //yAxis = renderAxis(xLinearScale, xAxis, yLinearScale, yAxis)[1];
         renderAxis(xLinearScale, xAxis, yLinearScale, yAxis);
 
-        setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
-        // circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
+        //setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale);
+        circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
         //circleLabels = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[1];
+        updateToolTip(circleGroup, xAxisName, yAxisName);
 
         })
-
-                                
+    //----------------------------------------------------------------------------------------------//                               
 }).catch(function(error) {
     console.log(error);
 });
