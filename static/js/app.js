@@ -232,7 +232,7 @@ d3.csv("static/data/data.csv").then(healthData => {
             .attr("cx", d => xLinearScale(d[xAxisName]))
             .attr("cy", d => yLinearScale(d[yAxisName]))
             .attr("r", 12)
-            .attr("fill", "skyblue")
+            .attr("fill", "dodgerblue")
             .attr("opacity", .75);
 
     // Put State abbrev in data points

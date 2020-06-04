@@ -1,6 +1,18 @@
+body{
+    background-color: whitesmoke;
+    font-family: monospace;
+}
+
+h1{
+    text-align: center;
+}
+
+h2{
+    text-align: center;
+}
+
 .active{
     fill: #000;
-    /* fill: gainsboro; */
     transition: fill 0.3s ease-out;
 }
 
@@ -24,8 +36,6 @@
     border-radius: 10px;
   }
 
-  .active-point{
-      /* border-radius: 50%;
-      border: 10px solid black !important; */
-      stroke: black;
-  }
+.active-point{
+    stroke: black;
+}
