@@ -107,22 +107,24 @@ function setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xScale, 
 
 }
 
-function updateToolTip(circleGroup, xAxisName, yAxisName){
+function updateToolTip(circleGroup, xAxisLabel, xAxisName, yAxisLabel, yAxisName){
     var toolTip = d3.tip()
     .attr("class", "tooltip")
     .offset([70, -80])
     .html(function(d) {
-        return (`${d.state}<br>${xAxisName}: ${d[xAxisName]}<br>${yAxisName}: ${d[yAxisName]}`);
+        return (`${d.state}<br>${xAxisLabel}: ${d[xAxisName]}<br>${yAxisLabel}: ${d[yAxisName]}`);
     });
 
   circleGroup.call(toolTip);
 
   circleGroup.on("mouseover", function(data) {
     toolTip.show(data);
+    d3.select(this).classed("active-point", true)
   })
     // onmouseout event
     .on("mouseout", function(data, index) {
       toolTip.hide(data);
+      d3.select(this).classed("active-point", false)
     });
 
     return circleGroup;
@@ -195,10 +197,10 @@ d3.csv("static/data/data.csv").then(healthData => {
             .text("Lacks Healthcare (%)")
 
     //--------------------------------Generate Axes---------------------------------------//
-    var xAxisName = d3.select(".x-axis-label.active").text();
-    var yAxisName = d3.select(".y-axis-label.active").text();
+    var xAxisLabel = d3.select(".x-axis-label.active").text();
+    var yAxisLabel = d3.select(".y-axis-label.active").text();
 
-    var names = matchNametoVariable(xAxisName, yAxisName);
+    var names = matchNametoVariable(xAxisLabel, yAxisLabel);
 
     var xAxisName = names[0];
     var yAxisName = names[1];
@@ -229,7 +231,7 @@ d3.csv("static/data/data.csv").then(healthData => {
             .classed("data-point", true)
             .attr("cx", d => xLinearScale(d[xAxisName]))
             .attr("cy", d => yLinearScale(d[yAxisName]))
-            .attr("r", 10)
+            .attr("r", 12)
             .attr("fill", "skyblue")
             .attr("opacity", .75);
 
@@ -247,22 +249,22 @@ d3.csv("static/data/data.csv").then(healthData => {
             .text(d => `${d.abbr}`) 
 
     //--------------------------------Create ToolTips---------------------------------------//
-    circleGroup = updateToolTip(circleGroup, xAxisName, yAxisName);
+    circleGroup = updateToolTip(circleGroup, xAxisLabel, xAxisName, yAxisLabel, yAxisName);
 
     //--------------------------------Event listeners-----------------------------------------------//
     //Event listener for x axis changes
     axisLabels.selectAll(".x-axis-label").on("click", function(){
         // Set x value based on selection
-        var newxAxisName = d3.select(this).text();
+        xAxisLabel = d3.select(this).text();
 
-        if (newxAxisName === "In Poverty (%)") {
+        if (xAxisLabel === "In Poverty (%)") {
             povertyLabel.classed("active", true)
                         .classed("inactive", false);
             ageLabel.classed("active", false)
                     .classed("inactive", true);
             incomeLabel.classed("active", false)
                         .classed("inactive", true);
-        }else if (newxAxisName === "Age (Median)"){
+        }else if (xAxisLabel === "Age (Median)"){
             povertyLabel.classed("active", false)
                         .classed("inactive", true);
             ageLabel.classed("active", true)
@@ -278,7 +280,7 @@ d3.csv("static/data/data.csv").then(healthData => {
                         .classed("inactive", false);
         }
         
-        switch(newxAxisName) {
+        switch(xAxisLabel) {
             case "Age (Median)":
                 xAxisName = "age";
                 break;
@@ -295,23 +297,23 @@ d3.csv("static/data/data.csv").then(healthData => {
 
         circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
 
-        updateToolTip(circleGroup, xAxisName, yAxisName);
+        updateToolTip(circleGroup, xAxisLabel, xAxisName, yAxisLabel, yAxisName);
 
    })
 
     //Event listener y axis changes   
    axisLabels.selectAll(".y-axis-label").on("click", function(){
         // Set y value based on selection
-        var newyAxisName = d3.select(this).text();
+        yAxisLabel = d3.select(this).text();
 
-        if (newyAxisName === "Lacks Healthcare (%)") {
+        if (yAxisLabel === "Lacks Healthcare (%)") {
             healthLabel.classed("active", true)
                         .classed("inactive", false);
             obeseLabel.classed("active", false)
                     .classed("inactive", true);
             smokesLabel.classed("active", false)
                         .classed("inactive", true);
-        }else if (newyAxisName === "Obese (%)"){
+        }else if (yAxisLabel === "Obese (%)"){
             healthLabel.classed("active", false)
                         .classed("inactive", true);
             obeseLabel.classed("active", true)
@@ -327,7 +329,7 @@ d3.csv("static/data/data.csv").then(healthData => {
                         .classed("inactive", false);
         }
 
-        switch(newyAxisName) {
+        switch(yAxisLabel) {
             case "Obese (%)":
                 yAxisName = "obesity";
                 break;
@@ -344,7 +346,7 @@ d3.csv("static/data/data.csv").then(healthData => {
 
         circleGroup = setDataPoints(circleGroup, circleLabels, xAxisName, yAxisName, xLinearScale, yLinearScale)[0];
        
-        updateToolTip(circleGroup, xAxisName, yAxisName);
+        updateToolTip(circleGroup, xAxisLabel, xAxisName, yAxisLabel, yAxisName);
 
         })
     //----------------------------------------------------------------------------------------------//                               

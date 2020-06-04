@@ -12,8 +12,8 @@
 
 .tooltip {
     position: absolute;
-    width: 135px;
-    height: 60px;
+    width: 150px;
+    height: 80px;
     padding: 2px;
     padding-top: 8px;
     font: 12px sans-serif;
@@ -22,4 +22,10 @@
     background: #2c2b2e5e;
     border: 0;
     border-radius: 10px;
+  }
+
+  .active-point{
+      /* border-radius: 50%;
+      border: 10px solid black !important; */
+      stroke: black;
   }
